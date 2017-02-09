@@ -25,7 +25,7 @@ func (t *FileManagement) Invoke(stub shim.ChaincodeStubInterface, function strin
 		body := args[0]
 		messageDigest := getMessageDigest(body)
 
-		stub.PutState(messageDigest, body)
+		stub.PutState(messageDigest, []byte(body))
 
 		return []byte(messageDigest), nil
 	default:
