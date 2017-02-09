@@ -26,8 +26,9 @@ func (t *FileManagement) Invoke(stub shim.ChaincodeStubInterface, function strin
 		messageDigest := getMessageDigest(body)
 
 		stub.PutState(messageDigest, []byte(body))
+		stub.SetEvent("SUCCESsdads", []byte(messageDigest))
 
-		return []byte(messageDigest), nil
+		return nil, nil
 	default:
 		return nil, errors.New("Unsupported operation")
 	}
