@@ -26,7 +26,6 @@ func (t *FileManagement) Invoke(stub shim.ChaincodeStubInterface, function strin
 		messageDigest := getMessageDigest(body)
 
 		stub.PutState(messageDigest, []byte(body))
-		stub.SetEvent("SUCCESsdads", []byte(messageDigest))
 
 		return nil, nil
 	default:
@@ -36,6 +35,14 @@ func (t *FileManagement) Invoke(stub shim.ChaincodeStubInterface, function strin
 
 func (t *FileManagement) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	switch function {
+	case "getHashByFile":
+		if len(args) != 1 {
+			return nil, errors.New("Incorrect number of arguments. File body is expected!");
+		}
+		body := args[0]
+		messageDigest := getMessageDigest(body)
+		return []byte(messageDigest), nil
+
 	case "getFileByHash":
 		if len(args) != 1 {
 			return nil, errors.New("Incorrect number of arguments. File hash is expected!");
