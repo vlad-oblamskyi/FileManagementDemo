@@ -7,9 +7,15 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"strconv"
+	"encoding/json"
 )
 
 type FileManagement struct {
+}
+
+type File struct {
+	name string `json:"name"`
+	body string `json:"body"`
 }
 
 func (t *FileManagement) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
@@ -19,13 +25,20 @@ func (t *FileManagement) Init(stub shim.ChaincodeStubInterface, function string,
 func (t *FileManagement) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	switch function {
 	case "put":
-		if len(args) != 1 {
-			return nil, errors.New("Incorrect number of arguments. File body is expected!");
+		if len(args) != 2 {
+			return nil, errors.New("Incorrect number of arguments. File name and file body are expected!");
 		}
-		body := args[0]
+		fileName := args[0]
+		body := args[1]
+		file := &File {
+			name: fileName,
+			body: body,
+		}
+		jsonFile, _ := json.Marshal(file)
+
 		messageDigest := getMessageDigest(body)
 
-		stub.PutState(messageDigest, []byte(body))
+		stub.PutState(messageDigest, jsonFile)
 
 		return nil, nil
 	default:
