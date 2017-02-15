@@ -14,8 +14,8 @@ type FileManagement struct {
 }
 
 type File struct {
-	name string `json:"name"`
-	body string `json:"body"`
+	Name string `json:"name"`
+	Body string `json:"body"`
 }
 
 func (t *FileManagement) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
@@ -31,10 +31,13 @@ func (t *FileManagement) Invoke(stub shim.ChaincodeStubInterface, function strin
 		fileName := args[0]
 		body := args[1]
 		file := &File {
-			name: fileName,
-			body: body,
+			Name: fileName,
+			Body: body,
 		}
-		jsonFile, _ := json.Marshal(file)
+		jsonFile, err := json.Marshal(file)
+		if err != nil {
+			return nil, err
+		}
 
 		messageDigest := getMessageDigest(body)
 
